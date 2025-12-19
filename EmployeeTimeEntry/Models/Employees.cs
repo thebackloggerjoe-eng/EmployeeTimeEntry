@@ -9,7 +9,5 @@ namespace EmployeeTimeEntry.Models
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
-
-       // public IEnumerable<SelectListItem> NamesList { get; set; }
     }
 }

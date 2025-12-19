@@ -17,5 +17,9 @@ namespace EmployeeTimeEntry.Models
         public DateTime InTime { get; set; }
 
         public DateTime OutTime { get; set; }
+
+       // public string SelectedNameId { get; set; }
+
+       // public List<SelectListItem> NamesList { get; set; }
     }
 }

@@ -7,9 +7,7 @@
 @using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post))
 {
   
-    @Html.DropDownListFor(
-    model => model.EmployeeID, new SelectList(Employees, "EmployeeID", "FirstName")
-    )
+   
 
     <input type="submit" name="nameSort" value="myValue"/>
 

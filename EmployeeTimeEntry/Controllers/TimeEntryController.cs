@@ -25,11 +25,8 @@ namespace EmployeeTimeEntry.Controllers
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
-            // var records = null;
-
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
             using var streamReaderTimeEntries = new StreamReader(csvFolderPathTimeEntries);
-
 
             using var csvReaderEmployees = new CsvReader(streamReaderEmployees, CultureInfo.InvariantCulture);
             using var csvReaderTimeEntries = new CsvReader(streamReaderTimeEntries, CultureInfo.InvariantCulture);
@@ -37,57 +34,47 @@ namespace EmployeeTimeEntry.Controllers
             var recordEmployees = csvReaderEmployees.GetRecords<Employees>();
             var recordTimeEntries = csvReaderTimeEntries.GetRecords<TimeEntries>();
 
-            var employees = new List<Employees>();
+            List<Employees> employeesList = new List<Employees>();
 
-            foreach (var recordEmployee in recordEmployees)
+            foreach (var employee in recordEmployees)  // add each employee id, first name, and last name to an object, then add to employeesList
             {
-                // Debug.WriteLine(record.EmployeeID + "    " + record.FirstName + "    " + record.LastName);
+                Employees employees = new Employees();
+                employees.EmployeeID = employee.EmployeeID;
+                employees.FirstName = employee.FirstName;
+                employees.LastName = employee.LastName;
 
-                employees = new List<Employees>
-                {
-                    new Employees {EmployeeID = recordEmployee.EmployeeID, FirstName = recordEmployee.FirstName, LastName = recordEmployee.LastName}
-                };
+                employeesList.Add(employees);
             }
 
-            List<EmployeeTimeEntryModel> employeeList = new List<EmployeeTimeEntryModel>();
 
 
-           // ViewBag.CityList = new ToSelectList(employees, "CityID", "CityName");
-
-
-
+            List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();
             int i = 0;
-            EmployeeTimeEntryModel emp = new EmployeeTimeEntryModel();
 
             foreach (var timedEntry in recordTimeEntries)
             {
-                // Debug.WriteLine(timedEntry.EntryID + "    " + timedEntry.EmployeeID + "    " + timedEntry.Date + "    " + timedEntry.InTime + "    " + timedEntry.OutTime);
+              //  timedEntry.e
+
+                string firstName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().FirstName;
+                string lastName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().LastName;
+
+                Debug.WriteLine(timedEntry.Date);
                 i++;
-                // EmployeesModel ee = new EmployeesModel();
-                // ee = recordEmployees;
-                //emp.NamesList = new SelectList(employees, "EmployeeID", "FirstName");
-                emp.FirstName = "Jim " + i;
-                emp.LastName = "Johnnyson";
-                emp.Date = timedEntry.Date;
-                emp.InTime = timedEntry.InTime;
-                emp.OutTime = timedEntry.OutTime;
-               // emp.SelectedNameId = emp.EmployeeID;
-               // emp.NamesList = new SelectList(employeeList, "EmployeeID", "FirstName");
+                EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
+                employeeTimeEntry.FirstName = firstName;
+                employeeTimeEntry.LastName = lastName;
+                employeeTimeEntry.Date = timedEntry.Date;
+                employeeTimeEntry.InTime = timedEntry.InTime;
+                employeeTimeEntry.OutTime = timedEntry.OutTime;
 
 
-                employeeList.Add(emp);
-
+                employeeTimeEntryList.Add(employeeTimeEntry);
             }
 
-            foreach (EmployeeTimeEntryModel ee in employeeList)
-            {
-                Debug.WriteLine(ee.FirstName + "   " + ee.LastName + "  " + ee.Date + "   " + ee.InTime);
-            }
+            var sortedTest = employeeTimeEntryList.OrderBy(e => e.InTime).ToList();
 
-            var sortedTest = employeeList.OrderBy(e => e.InTime).ToList();
-
-            ViewData["employeeList"] = sortedTest;
-            //ViewData["employeeList"] = employeeList;
+            //ViewData["employeeList"] = sortedTest;
+            ViewData["employeeList"] = employeeTimeEntryList;
 
 
             return View();
