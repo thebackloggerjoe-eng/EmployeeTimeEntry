@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace EmployeeTimeEntry.Controllers
 {
@@ -21,10 +22,36 @@ namespace EmployeeTimeEntry.Controllers
         }
 
 
-        public IActionResult TimeEntry(string someValue)
+        public IActionResult TimeEntry(EmployeeTimeEntryModel employeeTimeEntryModel)
         {
+
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
+
+            // Add the submitted time to the CSV file
+            // using (System.IO.StreamWriter file = new System.IO.StreamWriter(csvFolderPathTimeEntries, true))
+            // {
+            //     file.WriteLine(employeeTimeEntryModel.EntryID + "," + EmployeeID
+            // }
+
+            // using var streamWriterEmployees = new StreamWriter(csvFolderPathEmployees);
+            // using var csvWriteEmployee = new CsvWriter(streamWriterEmployees, CultureInfo.InvariantCulture);
+
+            //  csvWriteEmployee.WriteRecords();
+
+            //  try
+            //  {
+            //     if (!File.Exists(csvFolderPathEmployees))
+            //     {
+
+            //     }
+            // }
+
+
+
+
+            //string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
+            //string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
             using var streamReaderTimeEntries = new StreamReader(csvFolderPathTimeEntries);
@@ -47,6 +74,14 @@ namespace EmployeeTimeEntry.Controllers
                 employeesList.Add(employees);
             }
 
+            var viewModel = new EmployeeTimeEntryModel();
+            viewModel.NamesList = new List<SelectListItem>();
+
+            foreach (var employee in employeesList)
+            {
+                viewModel.NamesList.Add(new SelectListItem { Text = employee.FirstName + " " + employee.LastName, Value = employee.EmployeeID });
+            }
+
 
             List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();  // contains columns from Empployees.csv and TimeEntries.csv
 
@@ -66,22 +101,6 @@ namespace EmployeeTimeEntry.Controllers
 
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
-
-            var viewModel = new EmployeeTimeEntryModel();
-            viewModel.NamesList = new List<SelectListItem>();
-
-            foreach (var employee in employeeTimeEntryList)
-            {
-                viewModel.NamesList.Add(new SelectListItem { Text = employee.FirstName, Value = employee.LastName });
-            }
-           // {
-                // Populate the SelectList
-           //     NamesList = new SelectList(employeesList, "EmployeeID", "FirstName"),
-
-                // Set the default selected value (optional)
-               // SelectedManagerId = 2 // "Paul Smith" will be pre-selected
-           // };
-
 
             var sortedTest = employeeTimeEntryList.OrderBy(e => e.InTime).ToList();
 

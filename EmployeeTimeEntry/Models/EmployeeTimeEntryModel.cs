@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 
 namespace EmployeeTimeEntry.Models
 {
@@ -20,6 +21,7 @@ namespace EmployeeTimeEntry.Models
 
         public string SelectedNameId { get; set; }
 
+        [DisplayName("Select Your Name")]
         public List<SelectListItem> NamesList { get; set; }
     }
 }

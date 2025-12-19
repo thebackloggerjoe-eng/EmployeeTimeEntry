@@ -4,21 +4,22 @@
     ViewBag.Title = "Time Entry";
 }
 
-@using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post))
+@using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm" }))
 {
-  
-    @Html.LabelFor(model => model.SelectedNameId, "Select an Employee:")
-
     <div class="mb-3">
-        <label class="form-label">Select Employee</label>
-        <select class="form-select" asp-items="Model.NamesList">
+        @Html.LabelFor(m => m.NamesList)
+       <!-- <select class="form-select" asp-items="Model.NamesList"></select> -->
+        @Html.DropDownListFor(model => model.EmployeeID, Model.NamesList, "", new { @class = "form-select"})
+        @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
+        @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
 
-        </select>
+        @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+
+        <input type="submit" value="Add Time" />
+       <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
+
     </div>
 
-    <input type="submit" name="nameSort" value="myValue"/>
-
-    
 }
 
 
