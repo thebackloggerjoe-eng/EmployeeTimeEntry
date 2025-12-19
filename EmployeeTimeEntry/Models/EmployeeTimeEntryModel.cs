@@ -18,8 +18,8 @@ namespace EmployeeTimeEntry.Models
 
         public DateTime OutTime { get; set; }
 
-       // public string SelectedNameId { get; set; }
+        public string SelectedNameId { get; set; }
 
-       // public List<SelectListItem> NamesList { get; set; }
+        public List<SelectListItem> NamesList { get; set; }
     }
 }

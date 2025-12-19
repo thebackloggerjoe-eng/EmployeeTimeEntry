@@ -2,6 +2,7 @@
 using EmployeeTimeEntry.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -34,7 +35,7 @@ namespace EmployeeTimeEntry.Controllers
             var recordEmployees = csvReaderEmployees.GetRecords<Employees>();
             var recordTimeEntries = csvReaderTimeEntries.GetRecords<TimeEntries>();
 
-            List<Employees> employeesList = new List<Employees>();
+            List<Employees> employeesList = new List<Employees>();  // contains Employees.csv
 
             foreach (var employee in recordEmployees)  // add each employee id, first name, and last name to an object, then add to employeesList
             {
@@ -47,19 +48,14 @@ namespace EmployeeTimeEntry.Controllers
             }
 
 
+            List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();  // contains columns from Empployees.csv and TimeEntries.csv
 
-            List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();
-            int i = 0;
-
-            foreach (var timedEntry in recordTimeEntries)
+            foreach (var timedEntry in recordTimeEntries)  // match EmployeeID with employees first and last name and add columns to display in employeeTimeEntryList
             {
-              //  timedEntry.e
-
                 string firstName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().FirstName;
                 string lastName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().LastName;
 
                 Debug.WriteLine(timedEntry.Date);
-                i++;
                 EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
                 employeeTimeEntry.FirstName = firstName;
                 employeeTimeEntry.LastName = lastName;
@@ -71,13 +67,29 @@ namespace EmployeeTimeEntry.Controllers
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
 
+            var viewModel = new EmployeeTimeEntryModel();
+            viewModel.NamesList = new List<SelectListItem>();
+
+            foreach (var employee in employeeTimeEntryList)
+            {
+                viewModel.NamesList.Add(new SelectListItem { Text = employee.FirstName, Value = employee.LastName });
+            }
+           // {
+                // Populate the SelectList
+           //     NamesList = new SelectList(employeesList, "EmployeeID", "FirstName"),
+
+                // Set the default selected value (optional)
+               // SelectedManagerId = 2 // "Paul Smith" will be pre-selected
+           // };
+
+
             var sortedTest = employeeTimeEntryList.OrderBy(e => e.InTime).ToList();
 
             //ViewData["employeeList"] = sortedTest;
             ViewData["employeeList"] = employeeTimeEntryList;
 
 
-            return View();
+            return View(viewModel);
         }
     }
 }

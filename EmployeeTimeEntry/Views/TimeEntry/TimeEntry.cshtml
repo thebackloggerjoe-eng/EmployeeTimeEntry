@@ -7,7 +7,14 @@
 @using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post))
 {
   
-   
+    @Html.LabelFor(model => model.SelectedNameId, "Select an Employee:")
+
+    <div class="mb-3">
+        <label class="form-label">Select Employee</label>
+        <select class="form-select" asp-items="Model.NamesList">
+
+        </select>
+    </div>
 
     <input type="submit" name="nameSort" value="myValue"/>
 
