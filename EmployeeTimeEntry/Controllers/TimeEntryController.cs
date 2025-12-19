@@ -77,17 +77,6 @@ namespace EmployeeTimeEntry.Controllers
 
                 employeeList.Add(emp);
 
-               /* for (int i = 0; i < recordEmployees.Count(); i++)
-                {
-                   // Debug.WriteLine(records.EmployeeID + "    " + records.FirstName + "    " + records.LastName);
-
-                    if (timedEntry.EmployeeID == recordEmployees.)
-                    {
-                   //     Debug.WriteLine(employee.FirstName + "  " + employee.LastName);
-                   //     goto restart
-                   //     break;
-                    }
-                } */
             }
 
             foreach (EmployeeTimeEntryModel ee in employeeList)
