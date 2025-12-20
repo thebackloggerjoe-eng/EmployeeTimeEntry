@@ -32,6 +32,11 @@ namespace EmployeeTimeEntry.Controllers
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
+            if (ModelState.IsValid)
+            {
+
+            }
+
             // if new employee entry, then add it to TimeEntries.csv
             if (employeeTimeEntryModel.EmployeeID != null)  // EVENTUALLY CHANGE TO MODEL.ISVALID
             {

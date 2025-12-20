@@ -6,16 +6,38 @@
 
 @using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm" }))
 {
-    <div class="mb-3">
-        @Html.LabelFor(m => m.NamesList)
-       <!-- <select class="form-select" asp-items="Model.NamesList"></select> -->
-        @Html.DropDownListFor(model => model.EmployeeID, Model.NamesList, "", new { @class = "form-select"})
-        @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
-        @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
 
-        @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+    
 
-        <input type="submit" value="Add Time" />
+    <div class="mb-3 form-control">
+        <div class="employeeField">
+                @Html.LabelFor(m => m.EmployeeID)
+                @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "", new { @class = "form-select"})
+                @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error" })
+
+        </div>
+
+        <div class="dateField">
+                @Html.LabelFor(m => m.Date)
+                @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error" })
+        </div>
+
+        <div class="inTimeField">
+                @Html.LabelFor(m => m.InTime)
+                @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error" })
+        </div>
+        
+        <div class="outTimeField">
+                @Html.LabelFor(m => m.OutTime)
+                @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Time</button>
+
+
        <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
         @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
 
@@ -29,7 +51,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name:</th>
+                    <th>Employee Full Name:</th>
                     <th>Date:</th>
                     <th>In Time:</th>
                     <th>Out Time:</th>
@@ -58,6 +80,13 @@
 
 
     </div>
+
+}
+
+@section Scripts {
+       <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="" -->
+
 
 }
 
