@@ -6,42 +6,54 @@
 
 @using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm" }))
 {
+    <!-- Button trigger modal -->
+    <button type="button" id="btnclick"><!-- class="btn btn-primary" data-url="@Url.Action("Modalview","TimeEntry")" data-toggle="modal" data-target="#exampleModal">-->
+        Launch demo modal
+    </button>
 
+    <!-- Modal -->
+    <div class="modal fade" id="login"> <!-- tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="mb-3 form-control">
+                    <div class="employeeField">
+                        @Html.LabelFor(m => m.EmployeeID)
+                        @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error" })
+
+                    </div>
+
+                    <div class="dateField">
+                        @Html.LabelFor(m => m.Date)
+                        @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error" })
+                    </div>
+
+                    <div class="inTimeField">
+                        @Html.LabelFor(m => m.InTime)
+                        @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                        @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error" })
+                    </div>
+
+                    <div class="outTimeField">
+                        @Html.LabelFor(m => m.OutTime)
+                        @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                        @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Time</button>
+
+
+                    <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
+                    @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
+
+                </div>
+            </div>
+        </div>
+    </div>
     
 
-    <div class="mb-3 form-control">
-        <div class="employeeField">
-                @Html.LabelFor(m => m.EmployeeID)
-                @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "", new { @class = "form-select"})
-                @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error" })
-
-        </div>
-
-        <div class="dateField">
-                @Html.LabelFor(m => m.Date)
-                @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
-                @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error" })
-        </div>
-
-        <div class="inTimeField">
-                @Html.LabelFor(m => m.InTime)
-                @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error" })
-        </div>
-        
-        <div class="outTimeField">
-                @Html.LabelFor(m => m.OutTime)
-                @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error" })
-        </div>
-
-        <button type="submit" class="btn btn-primary">Add Time</button>
-
-
-       <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
-        @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
-
-    </div>
+    
 
 
     <div>
@@ -83,9 +95,35 @@
 
 }
 
+
 @section Scripts {
-       <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="" -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
+         $(function () {
+            // alert("opening");
+           // $("#login").modal('show');
+         }); 
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnclick").click(function () {
+         $("#login").modal('show');
+        // alert("clicked");
+            });
+
+            $("#HidebtnModal").click(function () {
+
+          $("#login").modal('hide');
+
+             });
+        });
+
+
+    </script>
 
 
 }

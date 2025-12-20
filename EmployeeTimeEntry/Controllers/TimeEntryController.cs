@@ -153,5 +153,10 @@ namespace EmployeeTimeEntry.Controllers
             viewModel.EntryID = employeeTimeEntryList.Count;
             return View(viewModel);
         }
+
+        public ActionResult Modalview()
+        {
+            return PartialView();
+        }
     }
 }
