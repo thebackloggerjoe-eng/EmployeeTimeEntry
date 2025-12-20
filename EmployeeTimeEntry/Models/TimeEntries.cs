@@ -6,7 +6,7 @@
 
         public string EmployeeID { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public DateTime InTime { get; set; }
 

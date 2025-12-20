@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using EmployeeTimeEntry.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,34 +25,55 @@ namespace EmployeeTimeEntry.Controllers
 
         public IActionResult TimeEntry(EmployeeTimeEntryModel employeeTimeEntryModel)
         {
-
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
-            // Add the submitted time to the CSV file
-            // using (System.IO.StreamWriter file = new System.IO.StreamWriter(csvFolderPathTimeEntries, true))
+            if (employeeTimeEntryModel.EmployeeID != null)
+            {
+                // Append to the file.
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HasHeaderRecord = false
+                };
+
+                //config.hea
+                bool append = true;
+                using var streamWriterEmployees = new StreamWriter(csvFolderPathTimeEntries, true);
+
+                List<TimeEntries> timeEntries = new List<TimeEntries>();
+                TimeEntries tm = new TimeEntries();
+                tm.EntryID = "1200";
+                tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
+                tm.Date = employeeTimeEntryModel.Date.ToShortDateString();
+                tm.InTime = employeeTimeEntryModel.InTime;
+                tm.OutTime = employeeTimeEntryModel.OutTime;
+                timeEntries.Add(tm);
+
+                foreach (var timeEntry in timeEntries)
+                {
+                    Debug.WriteLine(timeEntry);
+                }
+
+                using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                {
+                    csvWriteEmployee.WriteRecords(timeEntries);
+                };
+            }
+
+
+            // try
             // {
-            //     file.WriteLine(employeeTimeEntryModel.EntryID + "," + EmployeeID
+            //if (!File.Exists(csvFolderPathTimeEntries))
+            // {
+
             // }
+            //  }
 
-            // using var streamWriterEmployees = new StreamWriter(csvFolderPathEmployees);
-            // using var csvWriteEmployee = new CsvWriter(streamWriterEmployees, CultureInfo.InvariantCulture);
-
-            //  csvWriteEmployee.WriteRecords();
-
-            //  try
+            //  catch
             //  {
-            //     if (!File.Exists(csvFolderPathEmployees))
-            //     {
 
-            //     }
-            // }
+            //  }
 
-
-
-
-            //string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
-            //string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
             using var streamReaderTimeEntries = new StreamReader(csvFolderPathTimeEntries);
@@ -94,7 +116,7 @@ namespace EmployeeTimeEntry.Controllers
                 EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
                 employeeTimeEntry.FirstName = firstName;
                 employeeTimeEntry.LastName = lastName;
-                employeeTimeEntry.Date = timedEntry.Date;
+                employeeTimeEntry.Date = DateTime.Parse( timedEntry.Date);
                 employeeTimeEntry.InTime = timedEntry.InTime;
                 employeeTimeEntry.OutTime = timedEntry.OutTime;
 
