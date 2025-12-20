@@ -15,6 +15,10 @@ namespace EmployeeTimeEntry.Controllers
     public class TimeEntryController : Controller
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private int THOUSAND_ONE = 1001;
+
+       // string csvFolderPathEmployees
+           // string csvFolderPathTimeEntries
 
 
         public TimeEntryController(IWebHostEnvironment hostingEnvironment)
@@ -28,53 +32,49 @@ namespace EmployeeTimeEntry.Controllers
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
-            if (employeeTimeEntryModel.EmployeeID != null)
+            // if new employee entry, then add it to TimeEntries.csv
+            if (employeeTimeEntryModel.EmployeeID != null)  // EVENTUALLY CHANGE TO MODEL.ISVALID
             {
-                // Append to the file.
-                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                try
                 {
-                    HasHeaderRecord = false
-                };
+                    // if (!File.Exists(csvFolderPathTimeEntries))
+                    // Append to the file.
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        HasHeaderRecord = false
+                    };
 
-                //config.hea
-                bool append = true;
-                using var streamWriterEmployees = new StreamWriter(csvFolderPathTimeEntries, true);
+                    using var streamWriterEmployees = new StreamWriter(csvFolderPathTimeEntries, true);
 
-                List<TimeEntries> timeEntries = new List<TimeEntries>();
-                TimeEntries tm = new TimeEntries();
-                tm.EntryID = "1200";
-                tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
-                tm.Date = employeeTimeEntryModel.Date.ToShortDateString();
-                tm.InTime = employeeTimeEntryModel.InTime;
-                tm.OutTime = employeeTimeEntryModel.OutTime;
-                timeEntries.Add(tm);
+                    List<TimeEntries> timeEntries = new List<TimeEntries>();
+                    TimeEntries tm = new TimeEntries();
+                    tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE; //Convert.ToInt32(employeeTimeEntryModel.EntryID);
+                    tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
+                    tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); //"2025-5-22";
+                    tm.InTime = employeeTimeEntryModel.InTime.ToLongTimeString();
+                    tm.OutTime = employeeTimeEntryModel.OutTime.ToLongTimeString();
+                    timeEntries.Add(tm);
+                    // 1060,4,2025-05-13,08:30,17:30
+                    foreach (var timeEntry in timeEntries)
+                    {
+                        Debug.WriteLine(timeEntry);
+                    }
 
-                foreach (var timeEntry in timeEntries)
-                {
-                    Debug.WriteLine(timeEntry);
+                    using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                    {
+                        csvWriteEmployee.WriteRecords(timeEntries);
+                    };
+
                 }
 
-                using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                catch (Exception ex)
                 {
-                    csvWriteEmployee.WriteRecords(timeEntries);
-                };
+                   // Debug.WriteLine($"An unexpected error occurred while writing to file path: " + csvFolderPathTimeEntries + "  : {ex.Message}");
+                    Debug.WriteLine($"An unexpected error occurred while writing to file: {ex.Message}");
+                }
             }
 
-
-            // try
-            // {
-            //if (!File.Exists(csvFolderPathTimeEntries))
-            // {
-
-            // }
-            //  }
-
-            //  catch
-            //  {
-
-            //  }
-
-
+            // StreamReader start
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
             using var streamReaderTimeEntries = new StreamReader(csvFolderPathTimeEntries);
 
@@ -97,15 +97,18 @@ namespace EmployeeTimeEntry.Controllers
             }
 
             var viewModel = new EmployeeTimeEntryModel();
+            viewModel.FilterList = new List<SelectListItem>();
             viewModel.NamesList = new List<SelectListItem>();
+
+            viewModel.FilterList.Add(new SelectListItem { Value = "Name", Text = "Name" });
+            viewModel.FilterList.Add(new SelectListItem { Value = "Date", Text = "Date" });
 
             foreach (var employee in employeesList)
             {
                 viewModel.NamesList.Add(new SelectListItem { Text = employee.FirstName + " " + employee.LastName, Value = employee.EmployeeID });
             }
 
-
-            List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();  // contains columns from Empployees.csv and TimeEntries.csv
+            List<EmployeeTimeEntryModel> employeeTimeEntryList = new List<EmployeeTimeEntryModel>();  // contains columns from Employees.csv and TimeEntries.csv
 
             foreach (var timedEntry in recordTimeEntries)  // match EmployeeID with employees first and last name and add columns to display in employeeTimeEntryList
             {
@@ -114,22 +117,35 @@ namespace EmployeeTimeEntry.Controllers
 
                 Debug.WriteLine(timedEntry.Date);
                 EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
+                employeeTimeEntry.EntryID = timedEntry.EntryID;
                 employeeTimeEntry.FirstName = firstName;
                 employeeTimeEntry.LastName = lastName;
-                employeeTimeEntry.Date = DateTime.Parse( timedEntry.Date);
-                employeeTimeEntry.InTime = timedEntry.InTime;
-                employeeTimeEntry.OutTime = timedEntry.OutTime;
-
+                employeeTimeEntry.Date = DateTime.Parse(timedEntry.Date);
+                employeeTimeEntry.InTime = DateTime.Parse(timedEntry.InTime);
+                employeeTimeEntry.OutTime = DateTime.Parse(timedEntry.OutTime);
 
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
 
-            var sortedTest = employeeTimeEntryList.OrderBy(e => e.InTime).ToList();
+            var sortedNames = employeeTimeEntryList.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ToList();
+            var sortedDates = employeeTimeEntryList.OrderBy(e => e.Date).ToList();
 
-            //ViewData["employeeList"] = sortedTest;
-            ViewData["employeeList"] = employeeTimeEntryList;
+            if (employeeTimeEntryModel.SelectedFilter == "Name")
+            {
+                ViewData["employeeList"] = sortedNames;
+            }
 
+            else if (employeeTimeEntryModel.SelectedFilter == "Date")
+            {
+                ViewData["employeeList"] = sortedDates;
+            }
 
+            else
+            {
+                ViewData["employeeList"] = employeeTimeEntryList;
+            }
+
+            viewModel.EntryID = employeeTimeEntryList.Count;
             return View(viewModel);
         }
     }

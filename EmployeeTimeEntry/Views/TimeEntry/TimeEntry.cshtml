@@ -17,46 +17,50 @@
 
         <input type="submit" value="Add Time" />
        <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
+        @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
+
+    </div>
+
+
+    <div>
+        <!-- <div style="display: flex;display: flex;justify-content: center;">-->
+        <h1>Employee Time Entry</h1>@Html.DropDownListFor(model => model.SelectedFilter, Model.FilterList, "", new { @class = "form-select", onchange = "this.form.submit();" })
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name:</th>
+                    <th>Date:</th>
+                    <th>In Time:</th>
+                    <th>Out Time:</th>
+                    <th>Total hours:</th>
+                </tr>
+
+
+            </thead>
+
+            <tbody>
+                @foreach (var emp in ViewData["employeeList"] as List<EmployeeTimeEntryModel>)
+                {
+                    <tr>
+                        <td>@emp.FirstName @emp.LastName</td>
+                        <td>@emp.Date.ToShortDateString()</td>
+                        <td>@emp.InTime.TimeOfDay</td>
+                        <td>@emp.OutTime.TimeOfDay</td>
+                        <td>0</td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+
 
     </div>
 
 }
 
 
-<div>
-   <!-- <div style="display: flex;display: flex;justify-content: center;">-->
-    <h1>Employee Time Entry</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name:</th>
-                <th>Date:</th>
-                <th>In Time:</th>
-                <th>Out Time:</th>
-                <th>Total hours:</th>
-            </tr>
-
-
-        </thead>
-
-        <tbody>
-            @foreach (var emp in ViewData["employeeList"] as List<EmployeeTimeEntryModel>)
-            {
-                <tr>
-                    <td>@emp.FirstName @emp.LastName</td>
-                    <td>@emp.Date.ToShortDateString()</td>
-                    <td>@emp.InTime.TimeOfDay</td>
-                    <td>@emp.OutTime.TimeOfDay</td>
-                    <td>0</td>
-                </tr>
-            }
-
-        </tbody>
-
-    </table>
-    
-
-
-</div>
 

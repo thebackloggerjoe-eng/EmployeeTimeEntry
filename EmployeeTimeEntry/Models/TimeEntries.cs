@@ -2,14 +2,14 @@
 {
     public class TimeEntries
     {
-        public string EntryID { get; set; }
+        public int EntryID { get; set; }
 
         public string EmployeeID { get; set; }
 
         public string Date { get; set; }
 
-        public DateTime InTime { get; set; }
+        public string InTime { get; set; }
 
-        public DateTime OutTime { get; set; }
+        public string OutTime { get; set; }
     }
 }

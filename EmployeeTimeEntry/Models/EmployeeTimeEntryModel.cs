@@ -5,7 +5,7 @@ namespace EmployeeTimeEntry.Models
 {
     public class EmployeeTimeEntryModel
     {
-        public string EntryID { get; set; }
+        public int EntryID { get; set; }
 
         public string EmployeeID { get; set; }
 
@@ -21,7 +21,12 @@ namespace EmployeeTimeEntry.Models
 
         public string SelectedNameId { get; set; }
 
+        public string SelectedFilter { get; set; }
+
         [DisplayName("Select Your Name")]
         public List<SelectListItem> NamesList { get; set; }
+
+        [DisplayName("Filter By:")]
+        public List<SelectListItem> FilterList { get; set; }
     }
 }
