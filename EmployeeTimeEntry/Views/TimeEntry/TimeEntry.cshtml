@@ -21,7 +21,6 @@
                     <h4 class="modal-title">Time Entry Form</h4>
                     <div class="form-control" style="border-top: 0">
                         <div class="form-Field">
-                            <!--@Html.LabelFor(m => m.EmployeeID) -->
                             <span id="timeExistsError" class="text-danger" style="display:none">@ViewBag.TimeExistsMesssage</span>
                             @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "-- Select Employee --", new { @class = "form-select" })
                             <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })</span>
@@ -94,7 +93,7 @@
                         <td>@emp.Date.ToShortDateString()</td>
                         <td>@emp.InTime.TimeOfDay.ToString().Remove(@emp.InTime.TimeOfDay.ToString().Length - 3)</td>
                         <td>@emp.OutTime.TimeOfDay.ToString().Remove(@emp.OutTime.TimeOfDay.ToString().Length - 3)</td>
-                        <td>@emp.totalHours</td>
+                        <td>@emp.TotalHours</td>
                     </tr>
                 }
 
@@ -134,26 +133,16 @@
             $("#btnTimeEntryClose").click(function () {
                 $("#timeEntry").modal('hide');
             });
-
-
-            //$('.date-mask').mask('00/00/0000'); // Example mask for MM/DD/YYYY
         });
 
         function checkValidation()
         {
             const dateEntry = Date.parse($('#Date').val());
-            // alert(dateEntry);
-
-            // const inTimeEntry = Date.parse($('#InTime').val());
-
 
             const regex_time = /^(\d{2}):(\d{2})$/;
 
             const inTimeMatches = $('#InTime').val().match(regex_time);
-           // alert(inTimeMatches);
-
             const outTimeMatches = $('#OutTime').val().match(regex_time);
-            // alert(outTimeMatches);
  
             $("#empValidDisplay").hide();
             $("#dateError").hide();

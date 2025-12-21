@@ -28,22 +28,16 @@ namespace EmployeeTimeEntry.Controllers
             string csvFolderPathEmployees = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "Employees.csv");
             string csvFolderPathTimeEntries = Path.Combine(_hostingEnvironment.ContentRootPath, "EmployeeData", "TimeEntries.csv");
 
+            bool newEntrySuccess = false;
+
             if (ModelState.IsValid)
             {
+                bool entryExists = checkTimeEntry(csvFolderPathTimeEntries, employeeTimeEntryModel);
 
-            }
-
-            // if new employee entry, then add it to TimeEntries.csv
-            if (employeeTimeEntryModel.EmployeeID != null)  // EVENTUALLY CHANGE TO MODEL.ISVALID
-            {
-                bool entryExists = checkTimeEntry(csvFolderPathTimeEntries, employeeTimeEntryModel); // check if time entry exists for that employee and date, if so, don't add them
-
-                if (!entryExists)
+                if (!entryExists) // check if time entry exists for that employee and date, if it exists, don't add them
                 {
-                    try
+                    try  // use StreamWriter and CsvWriter to add employee to TimeEntries.csv
                     {
-                        // if (!File.Exists(csvFolderPathTimeEntries))
-                        // Append to the file.
                         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                         {
                             HasHeaderRecord = false
@@ -53,23 +47,14 @@ namespace EmployeeTimeEntry.Controllers
 
                         List<TimeEntries> timeEntries = new List<TimeEntries>();
                         TimeEntries tm = new TimeEntries();
-                        tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE; //Convert.ToInt32(employeeTimeEntryModel.EntryID);
+
+                        tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE;
                         tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
-                        tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); // "yyyy-mm-dd";
+                        tm.Date = employeeTimeEntryModel.Date.ToShortDateString();
                         tm.InTime = employeeTimeEntryModel.InTime.ToString("HH:mm");
                         tm.OutTime = employeeTimeEntryModel.OutTime.ToString("HH:mm");
                         timeEntries.Add(tm);
                         TimeSpan timeDifference = DateTime.Parse(tm.OutTime) - DateTime.Parse(tm.InTime);
-                        // employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
-                        // if ()
-                        Debug.WriteLine(timeDifference.TotalHours);
-                        Debug.WriteLine(timeDifference.TotalMinutes);
-                        Debug.WriteLine(timeDifference.TotalSeconds);
-
-                        //   employeeTimeEntry.InTime = DateTime.Parse(timedEntry.InTime);
-                        // employeeTimeEntry.OutTime = DateTime.Parse(timedEntry.OutTime);
-                        // TimeSpan timeDifference = employeeTimeEntry.OutTime - employeeTimeEntry.InTime;
-                        //employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
 
                         if (timeDifference.TotalMinutes <= 0)
                         {
@@ -81,16 +66,10 @@ namespace EmployeeTimeEntry.Controllers
                             using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
                             {
                                 csvWriteEmployee.WriteRecords(timeEntries);
+                                newEntrySuccess = true;
                             }
                             ;
                         }
-
-                            foreach (var timeEntry in timeEntries)
-                            {
-                                Debug.WriteLine(timeEntry);
-                            }
-
-                        
                     }
 
                     catch (Exception ex)
@@ -127,7 +106,7 @@ namespace EmployeeTimeEntry.Controllers
             viewModel.FilterList = new List<SelectListItem>();
             viewModel.NamesList = new List<SelectListItem>();
 
-            viewModel.FilterList.Add(new SelectListItem { Value = "Name", Text = "Name" });
+            viewModel.FilterList.Add(new SelectListItem { Value = "Employee Full Name", Text = "Employee Full Name" });
             viewModel.FilterList.Add(new SelectListItem { Value = "Date", Text = "Date" });
 
             foreach (var employee in employeesList)
@@ -142,7 +121,6 @@ namespace EmployeeTimeEntry.Controllers
                 string firstName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().FirstName;
                 string lastName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().LastName;
 
-               // Debug.WriteLine(timedEntry.Date);
                 EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
                 employeeTimeEntry.EntryID = timedEntry.EntryID;
                 employeeTimeEntry.FirstName = firstName;
@@ -151,10 +129,7 @@ namespace EmployeeTimeEntry.Controllers
                 employeeTimeEntry.InTime = DateTime.Parse(timedEntry.InTime);
                 employeeTimeEntry.OutTime = DateTime.Parse(timedEntry.OutTime);
                 TimeSpan timeDifference = employeeTimeEntry.OutTime - employeeTimeEntry.InTime;
-                employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
-                
-                   
-               // employeeTimeEntry.totalHours = 
+                employeeTimeEntry.TotalHours = Convert.ToInt16(timeDifference.TotalHours);
 
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
@@ -162,20 +137,30 @@ namespace EmployeeTimeEntry.Controllers
             var sortedNames = employeeTimeEntryList.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ToList();
             var sortedDates = employeeTimeEntryList.OrderBy(e => e.Date).ToList();
 
-            if (employeeTimeEntryModel.SelectedFilter == "Name")
+            string currentSortFilter = "";
+            if (employeeTimeEntryModel.SelectedFilter == "Employee Full Name")
             {
                 ViewData["employeeList"] = sortedNames;
+                currentSortFilter = "Employee Full Name";
             }
 
             else if (employeeTimeEntryModel.SelectedFilter == "Date")
             {
                 ViewData["employeeList"] = sortedDates;
+                currentSortFilter = "Date";
             }
 
             else
             {
                 ViewData["employeeList"] = employeeTimeEntryList;
             }
+
+            if (newEntrySuccess)  // if a new employee was added successfully, reset Time Entry Form, keep the sort filter
+            {
+                ModelState.Clear();
+                employeeTimeEntryModel.SelectedFilter = currentSortFilter;
+            }
+           
 
             viewModel.EntryID = employeeTimeEntryList.Count;
             return View(viewModel);
@@ -194,10 +179,10 @@ namespace EmployeeTimeEntry.Controllers
 
             foreach (var employee in recordTimeEntries)  // add each employee id, first name, and last name to an object, then add to employeesList
             {
-                Debug.WriteLine(employee.EmployeeID + "   " + employeeTimeEntryModel.EmployeeID  +  "  " + DateTime.Parse(employee.Date) + "   " + selectedDate);
+                //Debug.WriteLine(employee.EmployeeID + "   " + employeeTimeEntryModel.EmployeeID + "  " + DateTime.Parse(employee.Date) + "   " + selectedDate);
                 if (employee.EmployeeID == employeeTimeEntryModel.EmployeeID && DateTime.Parse(employee.Date) == selectedDate)
                 {
-                    ViewBag.TimeExistsMesssage = "The selected employee already has a Time entry for " + 
+                    ViewBag.TimeExistsMesssage = "The selected employee already has a Time entry for " +
                         selectedDate.ToShortDateString();
                     return true;
                 }

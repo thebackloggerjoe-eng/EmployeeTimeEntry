@@ -16,7 +16,6 @@ namespace EmployeeTimeEntry.Models
 
         public string? LastName { get; set; }
 
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Please enter a proper date.")]
         public DateTime Date { get; set; }
@@ -31,12 +30,11 @@ namespace EmployeeTimeEntry.Models
         [Required(ErrorMessage = "Please enter an Out Time.")]
         public DateTime OutTime { get; set; }
 
-        public int totalHours { get; set; }
+        public int TotalHours { get; set; }
 
         public string? SelectedNameId { get; set; }
 
         public string? SelectedFilter { get; set; }
-
 
         public string? NameSelect { get; set; }
         public List<SelectListItem>? NamesList { get; set; }
