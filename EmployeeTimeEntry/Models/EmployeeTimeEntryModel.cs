@@ -16,10 +16,9 @@ namespace EmployeeTimeEntry.Models
 
         public string? LastName { get; set; }
 
-        [DisplayName("Date:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Required(ErrorMessage = "Please enter a date.")]
+        [Required(ErrorMessage = "Please enter a proper date.")]
         public DateTime Date { get; set; }
 
         [DisplayName("Time In:")]

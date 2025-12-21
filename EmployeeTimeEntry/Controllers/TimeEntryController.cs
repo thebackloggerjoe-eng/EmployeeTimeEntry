@@ -40,6 +40,9 @@ namespace EmployeeTimeEntry.Controllers
             // if new employee entry, then add it to TimeEntries.csv
             if (employeeTimeEntryModel.EmployeeID != null)  // EVENTUALLY CHANGE TO MODEL.ISVALID
             {
+                bool entryExists = checkTimeEntry(csvFolderPathTimeEntries, employeeTimeEntryModel); // check if time entry exists for that employee and date, if so, don't add them
+                ViewBag.entryExists = entryExists;
+
                 try
                 {
                     // if (!File.Exists(csvFolderPathTimeEntries))
@@ -55,7 +58,7 @@ namespace EmployeeTimeEntry.Controllers
                     TimeEntries tm = new TimeEntries();
                     tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE; //Convert.ToInt32(employeeTimeEntryModel.EntryID);
                     tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
-                    tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); //"2025-5-22";
+                    tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); // "yyyy-mm-dd";
                     tm.InTime = employeeTimeEntryModel.InTime.ToLongTimeString();
                     tm.OutTime = employeeTimeEntryModel.OutTime.ToLongTimeString();
                     timeEntries.Add(tm);
@@ -120,7 +123,7 @@ namespace EmployeeTimeEntry.Controllers
                 string firstName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().FirstName;
                 string lastName = employeesList.Where(e => e.EmployeeID == timedEntry.EmployeeID).First().LastName;
 
-                Debug.WriteLine(timedEntry.Date);
+               // Debug.WriteLine(timedEntry.Date);
                 EmployeeTimeEntryModel employeeTimeEntry = new EmployeeTimeEntryModel();
                 employeeTimeEntry.EntryID = timedEntry.EntryID;
                 employeeTimeEntry.FirstName = firstName;
@@ -152,6 +155,34 @@ namespace EmployeeTimeEntry.Controllers
 
             viewModel.EntryID = employeeTimeEntryList.Count;
             return View(viewModel);
+        }
+
+        public bool checkTimeEntry(string filePath, EmployeeTimeEntryModel employeeTimeEntryModel)
+        {
+            using var streamReaderTimeEntries = new StreamReader(filePath);
+
+            using var csvReaderTimeEntries = new CsvReader(streamReaderTimeEntries, CultureInfo.InvariantCulture);
+
+            var recordTimeEntries = csvReaderTimeEntries.GetRecords<TimeEntries>();
+
+            List<TimeEntries> timeEntryCheckList = new List<TimeEntries>();  // contains Employees.csv
+
+            foreach (var employee in recordTimeEntries)  // add each employee id, first name, and last name to an object, then add to employeesList
+            {
+                Debug.WriteLine(employee.EmployeeID + "   " + employeeTimeEntryModel.EmployeeID  +  "  " + DateTime.Parse(employee.Date) + "   " + DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString()));
+                if (employee.EmployeeID == employeeTimeEntryModel.EmployeeID && DateTime.Parse(employee.Date) == DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString()))
+                {
+                    return true;
+                }
+               // Employees employees = new Employees();
+               // employees.EmployeeID = employee.EmployeeID;
+               // employees.FirstName = employee.FirstName;
+               // employees.LastName = employee.LastName;
+
+                    //employeesList.Add(employees);
+            }
+
+            return false;
         }
 
         public ActionResult Modalview()

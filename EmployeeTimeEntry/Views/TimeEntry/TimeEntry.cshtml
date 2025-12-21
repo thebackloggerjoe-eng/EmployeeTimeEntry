@@ -23,30 +23,32 @@
                         <div class="form-Field">
                             <!--@Html.LabelFor(m => m.EmployeeID) -->
                             @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "-- Select Employee --", new { @class = "form-select" })
-                            <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error", @style = "color: red" })</span>
+                            <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })</span>
 
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.Date)
-                            @Html.TextBoxFor(m => m.Date, "{0:d MMM yyyy}", new { @class = "form-control date-mask"})
-                            @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error", @style = "color: red" })
+                            @Html.TextBoxFor(m => m.Date, "{0:d MMM yyyy}", new { @class = "form-control", type = "date" })
+                            <!--@Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })-->
+                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid Date</span>
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.InTime)
                             @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                            @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error", @style = "color: red" })
+                            <!-- @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "text-danger" })-->
+                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid time</span>
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.OutTime)
                             @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                            @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error", @style = "color: red" })
+                            <!--@Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "text-danger" })-->
+                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid time</span>
                         </div>
 
                         <button id="addTimeBtn" type="button" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
-
 
                         <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
                         @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
@@ -90,8 +92,8 @@
                     <tr>
                         <td>@emp.FirstName @emp.LastName</td>
                         <td>@emp.Date.ToShortDateString()</td>
-                        <td>@emp.InTime.TimeOfDay</td>
-                        <td>@emp.OutTime.TimeOfDay</td>
+                        <td>@emp.InTime.TimeOfDay.ToString().Remove(@emp.InTime.TimeOfDay.ToString().Length - 3)</td>
+                        <td>@emp.OutTime.TimeOfDay.ToString().Remove(@emp.OutTime.TimeOfDay.ToString().Length - 3)</td>
                         <td>0</td>
                     </tr>
                 }
@@ -106,9 +108,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 
-    <script>
+    <script type="text/javascript">
         $(function () {
             $("#empValidDisplay").hide();
+
+            alert(" I am " + '@ViewBag.entryExists');
 
         });
     </script>
@@ -130,20 +134,48 @@
 
         function checkValidation()
         {
-          // alert($('#EmployeeID').val())
-         // alert($('#Date').val());
-           if ($('#EmployeeID').val() == '')
-           {
-               $("#empValidDisplay").show();
+            const dateEntry = Date.parse($('#Date').val());
+            // alert(dateEntry);
 
-               alert("submit detail");
-               
-           }
+            // const inTimeEntry = Date.parse($('#InTime').val());
 
-           else
-           {
-               $('#timeEntryForm').submit();
-           }
+
+            const regex_time = /^(\d{2}):(\d{2})$/;
+
+            const timeTest = "timmm";
+
+            const inTimeMatches = $('#InTime').val().match(regex_time);
+           // alert(inTimeMatches);
+
+            const outTimeMatches = $('#OutTime').val().match(regex_time);
+            // alert(outTimeMatches);
+ 
+            $("#empValidDisplay").hide();
+            $("#dateError").hide();
+
+            if ($('#EmployeeID').val() == '')
+            {
+                $("#empValidDisplay").show();
+            }
+
+            if (isNaN(dateEntry))
+            {
+                $("#dateError").show();
+            }
+
+            if (!inTimeMatches)
+            {
+                $("#inTimeError").show();
+            }
+
+            if (!outTimeMatches)
+            {
+                $("#outTimeError").show();
+            }
+
+            if ($('#EmployeeID').val() == '' || isNaN(dateEntry)) { return; }
+
+            $('#timeEntryForm').submit();
         }
 
     </script>
