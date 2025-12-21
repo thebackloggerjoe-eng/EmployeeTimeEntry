@@ -21,14 +21,14 @@ namespace EmployeeTimeEntry.Models
         [Required(ErrorMessage = "Please enter a proper date.")]
         public DateTime Date { get; set; }
 
-        [DisplayName("Time In:")]
+        [DisplayName("In Time:")]
         [DataType(DataType.Time)]
-        [Required(ErrorMessage = "Please enter Time Started.")]
+        [Required(ErrorMessage = "Please enter an In Time.")]
         public DateTime InTime { get; set; }
 
-        [DisplayName("Time Out:")]
+        [DisplayName("Out Time:")]
         [DataType(DataType.Time)]
-        [Required(ErrorMessage = "Please enter Time Ended.")]
+        [Required(ErrorMessage = "Please enter an Out Time.")]
         public DateTime OutTime { get; set; }
 
         public int totalHours { get; set; }

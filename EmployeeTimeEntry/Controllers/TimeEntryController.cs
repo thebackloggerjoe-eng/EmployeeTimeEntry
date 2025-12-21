@@ -37,7 +37,6 @@ namespace EmployeeTimeEntry.Controllers
             if (employeeTimeEntryModel.EmployeeID != null)  // EVENTUALLY CHANGE TO MODEL.ISVALID
             {
                 bool entryExists = checkTimeEntry(csvFolderPathTimeEntries, employeeTimeEntryModel); // check if time entry exists for that employee and date, if so, don't add them
-                ViewBag.entryExists = entryExists;
 
                 if (!entryExists)
                 {
@@ -60,16 +59,38 @@ namespace EmployeeTimeEntry.Controllers
                         tm.InTime = employeeTimeEntryModel.InTime.ToString("HH:mm");
                         tm.OutTime = employeeTimeEntryModel.OutTime.ToString("HH:mm");
                         timeEntries.Add(tm);
-                        // 1060,4,2025-05-13,08:30,17:30
-                        foreach (var timeEntry in timeEntries)
+                        TimeSpan timeDifference = DateTime.Parse(tm.OutTime) - DateTime.Parse(tm.InTime);
+                        // employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
+                        // if ()
+                        Debug.WriteLine(timeDifference.TotalHours);
+                        Debug.WriteLine(timeDifference.TotalMinutes);
+                        Debug.WriteLine(timeDifference.TotalSeconds);
+
+                        //   employeeTimeEntry.InTime = DateTime.Parse(timedEntry.InTime);
+                        // employeeTimeEntry.OutTime = DateTime.Parse(timedEntry.OutTime);
+                        // TimeSpan timeDifference = employeeTimeEntry.OutTime - employeeTimeEntry.InTime;
+                        //employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
+
+                        if (timeDifference.TotalMinutes <= 0)
                         {
-                            Debug.WriteLine(timeEntry);
+                            ViewBag.timeDifferenceOff = "Please Input an 'In Time' that takes place before 'Out Time' (" + DateTime.Parse(tm.OutTime).ToString("hh:mm tt") + ") ";
                         }
 
-                        using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                        else
                         {
-                            csvWriteEmployee.WriteRecords(timeEntries);
-                        };
+                            using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                            {
+                                csvWriteEmployee.WriteRecords(timeEntries);
+                            }
+                            ;
+                        }
+
+                            foreach (var timeEntry in timeEntries)
+                            {
+                                Debug.WriteLine(timeEntry);
+                            }
+
+                        
                     }
 
                     catch (Exception ex)
@@ -177,7 +198,7 @@ namespace EmployeeTimeEntry.Controllers
                 if (employee.EmployeeID == employeeTimeEntryModel.EmployeeID && DateTime.Parse(employee.Date) == selectedDate)
                 {
                     ViewBag.TimeExistsMesssage = "The selected employee already has a Time entry for " + 
-                        DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString());
+                        selectedDate.ToShortDateString();
                     return true;
                 }
             }

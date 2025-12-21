@@ -39,21 +39,20 @@
                             @Html.LabelFor(m => m.InTime)
                             @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
                             <!-- @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "text-danger" })-->
-                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid time</span>
+                            <span id="inTimeError" class="text-danger" style="display:none">Please Enter a Valid In Time</span>
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.OutTime)
                             @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
                             <!--@Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "text-danger" })-->
-                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid time</span>
+                            <span id="outTimeError" class="text-danger" style="display:none">Please Enter a Valid Out Time</span>
+                            <span id="timeDifError" class="text-danger" style="display:none">@ViewBag.timeDifferenceOff</span>
                         </div>
 
                         <button id="addTimeBtn" type="button" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
 
-                        <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
                         @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
-
                     </div>
                 </div>
             </div>
@@ -111,16 +110,17 @@
 
     <script type="text/javascript">
         $(function () {
-            $("#empValidDisplay").hide();
-
-            alert(" I am " + '@ViewBag.entryExists');
-
-            if ('@ViewBag.entryExists')
+            if ('@ViewBag.TimeExistsMesssage'.length > 0)
             {
                 $("#timeExistsError").show();
+                $("#timeEntry").modal('show');
             }
-            
 
+            if ('@ViewBag.timeDifferenceOff'.length > 0)
+            {
+                $("#timeDifError").show();
+                $("#timeEntry").modal('show');
+            }
         });
     </script>
 
@@ -136,7 +136,7 @@
             });
 
 
-            $('.date-mask').mask('00/00/0000'); // Example mask for MM/DD/YYYY
+            //$('.date-mask').mask('00/00/0000'); // Example mask for MM/DD/YYYY
         });
 
         function checkValidation()
@@ -148,8 +148,6 @@
 
 
             const regex_time = /^(\d{2}):(\d{2})$/;
-
-            const timeTest = "timmm";
 
             const inTimeMatches = $('#InTime').val().match(regex_time);
            // alert(inTimeMatches);
