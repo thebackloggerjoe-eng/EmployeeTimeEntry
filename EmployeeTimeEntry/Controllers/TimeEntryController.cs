@@ -17,10 +17,6 @@ namespace EmployeeTimeEntry.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private int THOUSAND_ONE = 1001;
 
-       // string csvFolderPathEmployees
-           // string csvFolderPathTimeEntries
-
-
         public TimeEntryController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -43,42 +39,44 @@ namespace EmployeeTimeEntry.Controllers
                 bool entryExists = checkTimeEntry(csvFolderPathTimeEntries, employeeTimeEntryModel); // check if time entry exists for that employee and date, if so, don't add them
                 ViewBag.entryExists = entryExists;
 
-                try
+                if (!entryExists)
                 {
-                    // if (!File.Exists(csvFolderPathTimeEntries))
-                    // Append to the file.
-                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    try
                     {
-                        HasHeaderRecord = false
-                    };
+                        // if (!File.Exists(csvFolderPathTimeEntries))
+                        // Append to the file.
+                        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                        {
+                            HasHeaderRecord = false
+                        };
 
-                    using var streamWriterEmployees = new StreamWriter(csvFolderPathTimeEntries, true);
+                        using var streamWriterEmployees = new StreamWriter(csvFolderPathTimeEntries, true);
 
-                    List<TimeEntries> timeEntries = new List<TimeEntries>();
-                    TimeEntries tm = new TimeEntries();
-                    tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE; //Convert.ToInt32(employeeTimeEntryModel.EntryID);
-                    tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
-                    tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); // "yyyy-mm-dd";
-                    tm.InTime = employeeTimeEntryModel.InTime.ToLongTimeString();
-                    tm.OutTime = employeeTimeEntryModel.OutTime.ToLongTimeString();
-                    timeEntries.Add(tm);
-                    // 1060,4,2025-05-13,08:30,17:30
-                    foreach (var timeEntry in timeEntries)
-                    {
-                        Debug.WriteLine(timeEntry);
+                        List<TimeEntries> timeEntries = new List<TimeEntries>();
+                        TimeEntries tm = new TimeEntries();
+                        tm.EntryID = employeeTimeEntryModel.EntryID + THOUSAND_ONE; //Convert.ToInt32(employeeTimeEntryModel.EntryID);
+                        tm.EmployeeID = employeeTimeEntryModel.EmployeeID;
+                        tm.Date = employeeTimeEntryModel.Date.ToShortDateString(); // "yyyy-mm-dd";
+                        tm.InTime = employeeTimeEntryModel.InTime.ToString("HH:mm");
+                        tm.OutTime = employeeTimeEntryModel.OutTime.ToString("HH:mm");
+                        timeEntries.Add(tm);
+                        // 1060,4,2025-05-13,08:30,17:30
+                        foreach (var timeEntry in timeEntries)
+                        {
+                            Debug.WriteLine(timeEntry);
+                        }
+
+                        using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                        {
+                            csvWriteEmployee.WriteRecords(timeEntries);
+                        };
                     }
 
-                    using (var csvWriteEmployee = new CsvWriter(streamWriterEmployees, config))
+                    catch (Exception ex)
                     {
-                        csvWriteEmployee.WriteRecords(timeEntries);
-                    };
-
-                }
-
-                catch (Exception ex)
-                {
-                   // Debug.WriteLine($"An unexpected error occurred while writing to file path: " + csvFolderPathTimeEntries + "  : {ex.Message}");
-                    Debug.WriteLine($"An unexpected error occurred while writing to file: {ex.Message}");
+                        // Debug.WriteLine($"An unexpected error occurred while writing to file path: " + csvFolderPathTimeEntries + "  : {ex.Message}");
+                        Debug.WriteLine($"An unexpected error occurred while writing to file: {ex.Message}");
+                    }
                 }
             }
 
@@ -131,6 +129,11 @@ namespace EmployeeTimeEntry.Controllers
                 employeeTimeEntry.Date = DateTime.Parse(timedEntry.Date);
                 employeeTimeEntry.InTime = DateTime.Parse(timedEntry.InTime);
                 employeeTimeEntry.OutTime = DateTime.Parse(timedEntry.OutTime);
+                TimeSpan timeDifference = employeeTimeEntry.OutTime - employeeTimeEntry.InTime;
+                employeeTimeEntry.totalHours = Convert.ToInt16(timeDifference.TotalHours);
+                
+                   
+               // employeeTimeEntry.totalHours = 
 
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
@@ -165,21 +168,18 @@ namespace EmployeeTimeEntry.Controllers
 
             var recordTimeEntries = csvReaderTimeEntries.GetRecords<TimeEntries>();
 
-            List<TimeEntries> timeEntryCheckList = new List<TimeEntries>();  // contains Employees.csv
+            List<TimeEntries> timeEntryCheckList = new List<TimeEntries>();  // contains TimeEntries.csv
+            DateTime selectedDate = DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString());
 
             foreach (var employee in recordTimeEntries)  // add each employee id, first name, and last name to an object, then add to employeesList
             {
-                Debug.WriteLine(employee.EmployeeID + "   " + employeeTimeEntryModel.EmployeeID  +  "  " + DateTime.Parse(employee.Date) + "   " + DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString()));
-                if (employee.EmployeeID == employeeTimeEntryModel.EmployeeID && DateTime.Parse(employee.Date) == DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString()))
+                Debug.WriteLine(employee.EmployeeID + "   " + employeeTimeEntryModel.EmployeeID  +  "  " + DateTime.Parse(employee.Date) + "   " + selectedDate);
+                if (employee.EmployeeID == employeeTimeEntryModel.EmployeeID && DateTime.Parse(employee.Date) == selectedDate)
                 {
+                    ViewBag.TimeExistsMesssage = "The selected employee already has a Time entry for " + 
+                        DateTime.Parse(employeeTimeEntryModel.Date.ToShortDateString());
                     return true;
                 }
-               // Employees employees = new Employees();
-               // employees.EmployeeID = employee.EmployeeID;
-               // employees.FirstName = employee.FirstName;
-               // employees.LastName = employee.LastName;
-
-                    //employeesList.Add(employees);
             }
 
             return false;

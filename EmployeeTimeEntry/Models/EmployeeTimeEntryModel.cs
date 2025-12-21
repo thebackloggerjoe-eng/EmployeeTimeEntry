@@ -31,6 +31,8 @@ namespace EmployeeTimeEntry.Models
         [Required(ErrorMessage = "Please enter Time Ended.")]
         public DateTime OutTime { get; set; }
 
+        public int totalHours { get; set; }
+
         public string? SelectedNameId { get; set; }
 
         public string? SelectedFilter { get; set; }

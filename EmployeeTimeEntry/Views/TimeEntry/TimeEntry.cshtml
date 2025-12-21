@@ -22,6 +22,7 @@
                     <div class="form-control" style="border-top: 0">
                         <div class="form-Field">
                             <!--@Html.LabelFor(m => m.EmployeeID) -->
+                            <span id="timeExistsError" class="text-danger" style="display:none">@ViewBag.TimeExistsMesssage</span>
                             @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "-- Select Employee --", new { @class = "form-select" })
                             <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })</span>
 
@@ -94,7 +95,7 @@
                         <td>@emp.Date.ToShortDateString()</td>
                         <td>@emp.InTime.TimeOfDay.ToString().Remove(@emp.InTime.TimeOfDay.ToString().Length - 3)</td>
                         <td>@emp.OutTime.TimeOfDay.ToString().Remove(@emp.OutTime.TimeOfDay.ToString().Length - 3)</td>
-                        <td>0</td>
+                        <td>@emp.totalHours</td>
                     </tr>
                 }
 
@@ -113,6 +114,12 @@
             $("#empValidDisplay").hide();
 
             alert(" I am " + '@ViewBag.entryExists');
+
+            if ('@ViewBag.entryExists')
+            {
+                $("#timeExistsError").show();
+            }
+            
 
         });
     </script>
