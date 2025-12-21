@@ -4,61 +4,72 @@
     ViewBag.Title = "Time Entry";
 }
 
-@using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm" }))
+@using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm", @class = "needs-validated" }))
 {
-    <!-- Button trigger modal -->
-    <button type="button" id="btnclick"><!-- class="btn btn-primary" data-url="@Url.Action("Modalview","TimeEntry")" data-toggle="modal" data-target="#exampleModal">-->
-        Launch demo modal
-    </button>
+    <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="timeEntry">
+            <!-- tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+            <div class="modal-dialog modal-lg" role="document" style="max-width: 300px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        close
+                        <button type="button" id="btnTimeEntryClose" class="close" data-dismiss="timeEntry">
+                            x
+                        </button>
+                    </div>
+                    <h4 class="modal-title">Time Entry Form</h4>
+                    <div class="form-control" style="border-top: 0">
+                        <div class="form-Field">
+                            <!--@Html.LabelFor(m => m.EmployeeID) -->
+                            @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "-- Select Employee --", new { @class = "form-select" })
+                            <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error", @style = "color: red" })</span>
 
-    <!-- Modal -->
-    <div class="modal fade" id="login"> <!-- tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="mb-3 form-control">
-                    <div class="employeeField">
-                        @Html.LabelFor(m => m.EmployeeID)
-                        @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "", new { @class = "form-select" })
-                        @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "error" })
+                        </div>
+
+                        <div class="form-Field">
+                            @Html.LabelFor(m => m.Date)
+                            @Html.TextBoxFor(m => m.Date, "{0:d MMM yyyy}", new { @class = "form-control date-mask"})
+                            @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error", @style = "color: red" })
+                        </div>
+
+                        <div class="form-Field">
+                            @Html.LabelFor(m => m.InTime)
+                            @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                            @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error", @style = "color: red" })
+                        </div>
+
+                        <div class="form-Field">
+                            @Html.LabelFor(m => m.OutTime)
+                            @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
+                            @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error", @style = "color: red" })
+                        </div>
+
+                        <button id="addTimeBtn" type="button" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
+
+
+                        <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
+                        @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
 
                     </div>
-
-                    <div class="dateField">
-                        @Html.LabelFor(m => m.Date)
-                        @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy}", new { @class = "form-control", type = "date" })
-                        @Html.ValidationMessageFor(m => m.Date, "", new { @class = "error" })
-                    </div>
-
-                    <div class="inTimeField">
-                        @Html.LabelFor(m => m.InTime)
-                        @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                        @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "error" })
-                    </div>
-
-                    <div class="outTimeField">
-                        @Html.LabelFor(m => m.OutTime)
-                        @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                        @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "error" })
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Add Time</button>
-
-
-                    <!-- <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to List</a> -->
-                    @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
-
                 </div>
             </div>
         </div>
     </div>
-    
-
-    
-
 
     <div>
+
         <!-- <div style="display: flex;display: flex;justify-content: center;">-->
-        <h1>Employee Time Entry</h1>@Html.DropDownListFor(model => model.SelectedFilter, Model.FilterList, "", new { @class = "form-select", onchange = "this.form.submit();" })
+        <h1>Employee Time Entry</h1>
+
+        <!-- Button trigger modal -->
+        <div class="entry-and-sort">
+            <button type="button" id="btnTimeEntry">
+                New Time Entry
+            </button>
+
+            @Html.DropDownListFor(model => model.SelectedFilter, Model.FilterList, "-- filter by --", new { @class = "form-select", onchange = "this.form.submit();" })
+        </div>
 
         <table class="table">
             <thead>
@@ -86,15 +97,9 @@
                 }
 
             </tbody>
-
         </table>
-
-
-
     </div>
-
 }
-
 
 @section Scripts {
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
@@ -102,30 +107,46 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
 
     <script>
-         $(function () {
-            // alert("opening");
-           // $("#login").modal('show');
-         }); 
+        $(function () {
+            $("#empValidDisplay").hide();
+
+        });
     </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#btnclick").click(function () {
-         $("#login").modal('show');
-        // alert("clicked");
+            $("#btnTimeEntry").click(function () {
+                $("#timeEntry").modal('show');
+                // alert("clicked");
             });
 
-            $("#HidebtnModal").click(function () {
+            $("#btnTimeEntryClose").click(function () {
+                $("#timeEntry").modal('hide');
+            });
 
-          $("#login").modal('hide');
 
-             });
+            $('.date-mask').mask('00/00/0000'); // Example mask for MM/DD/YYYY
         });
 
+        function checkValidation()
+        {
+          // alert($('#EmployeeID').val())
+         // alert($('#Date').val());
+           if ($('#EmployeeID').val() == '')
+           {
+               $("#empValidDisplay").show();
+
+               alert("submit detail");
+               
+           }
+
+           else
+           {
+               $('#timeEntryForm').submit();
+           }
+        }
 
     </script>
-
-
 }
 
 

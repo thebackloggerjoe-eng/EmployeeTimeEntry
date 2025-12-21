@@ -12,35 +12,35 @@ namespace EmployeeTimeEntry.Models
         [Required(ErrorMessage = "Please Select Employee Name.")]
         public string EmployeeID { get; set; }
 
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
-        [DisplayName("Select Date of Time Entry")]
-        [Required(ErrorMessage = "Please provide a date.")]
+        [DisplayName("Date:")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "Please enter a date.")]
         public DateTime Date { get; set; }
 
-        [DisplayName("Input Time Started")]
-        [Required(ErrorMessage = "Please provide Time Started.")]
+        [DisplayName("Time In:")]
+        [DataType(DataType.Time)]
+        [Required(ErrorMessage = "Please enter Time Started.")]
         public DateTime InTime { get; set; }
 
-
-        // [Required]
-        // [DataType(DataType.Time)]
-        // [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
-        [DisplayName("Input Time Ended")]
-        [Required(ErrorMessage = "Please provide Time Ended.")]
+        [DisplayName("Time Out:")]
+        [DataType(DataType.Time)]
+        [Required(ErrorMessage = "Please enter Time Ended.")]
         public DateTime OutTime { get; set; }
 
-        public string SelectedNameId { get; set; }
+        public string? SelectedNameId { get; set; }
 
-        public string SelectedFilter { get; set; }
+        public string? SelectedFilter { get; set; }
 
 
         public string? NameSelect { get; set; }
-        public List<SelectListItem> NamesList { get; set; }
+        public List<SelectListItem>? NamesList { get; set; }
 
         [DisplayName("Filter By:")]
-        public List<SelectListItem> FilterList { get; set; }
+        public List<SelectListItem>? FilterList { get; set; }
     }
 }

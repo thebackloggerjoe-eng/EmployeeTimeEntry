@@ -23,4 +23,42 @@ body {
 
 h1 {
     text-align: center;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.modal-header {
+    justify-content: right;
+    height: 40px;
+    border-bottom: 0;
+}
+
+.modal-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.entry-and-sort {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#btnTimeEntry {
+    width: 150px;
+    margin-right: 20px;
+}
+
+#addTimeBtn {
+    width: 100%;
+    margin: 0 auto 10px;
+    font-weight: bold;
+}
+
+#SelectedFilter {
+    width: auto;
+}
+
+.form-Field {
+    margin-bottom: 20px;
 }
