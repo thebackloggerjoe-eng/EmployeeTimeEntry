@@ -19,6 +19,7 @@ namespace EmployeeTimeEntry.Controllers
 
         string csvFolderPathEmployees;     // folder path for Employees.csv
         string csvFolderPathTimeEntries;   // folder path for TimeEntries.csv
+        string reSortList = "";
 
         EmployeeTimeEntryModel viewModel = new EmployeeTimeEntryModel();
 
@@ -33,7 +34,7 @@ namespace EmployeeTimeEntry.Controllers
 
         public IActionResult Index()
         {
-            ViewData["employeeList"] = readCsvFiles();
+            ViewData["employeeList"] = readCsvFiles("default");
             viewModel.EntryID = employeeTimeEntryList.Count;
 
             return View(viewModel);
@@ -80,7 +81,8 @@ namespace EmployeeTimeEntry.Controllers
                             {
                                 csvWriteEmployee.WriteRecords(timeEntries);
                                 newEntrySuccess = true;
-                            };
+                            }
+                            ;
                         }
                     }
 
@@ -92,41 +94,20 @@ namespace EmployeeTimeEntry.Controllers
                 }
             }
 
-            readCsvFiles();
-
-            var sortedNames = employeeTimeEntryList.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ToList();
-            var sortedDates = employeeTimeEntryList.OrderBy(e => e.Date).ToList();
-
-            string currentSortFilter = "";
-            if (employeeTimeEntryModel.SelectedFilter == "Employee Full Name")
-            {
-                ViewData["employeeList"] = sortedNames;
-                currentSortFilter = "Employee Full Name";
-            }
-
-            else if (employeeTimeEntryModel.SelectedFilter == "Date")
-            {
-                ViewData["employeeList"] = sortedDates;
-                currentSortFilter = "Date";
-            }
-
-            else
-            {
-                ViewData["employeeList"] = employeeTimeEntryList;
-            }
+            ViewData["employeeList"] = readCsvFiles("");
 
             if (newEntrySuccess)  // if a new employee was added successfully, reset Time Entry Form, keep the sort filter
             {
                 ViewBag.entrySuccessNotification = "Time Entry Added";
                 ModelState.Clear();
-                employeeTimeEntryModel.SelectedFilter = currentSortFilter;
+                //employeeTimeEntryModel.SelectedFilter = TempData["currentSort"].ToString();
             }
 
             viewModel.EntryID = employeeTimeEntryList.Count;
             return View("Index", viewModel);
         }
 
-        public List<EmployeeTimeEntryModel> readCsvFiles()  // function to call for reading the csv files and displaying time entries on screen
+        public List<EmployeeTimeEntryModel> readCsvFiles(string filterString)  // function to call for reading the csv files and displaying time entries on screen
         {
             // StreamReader start
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
@@ -179,16 +160,44 @@ namespace EmployeeTimeEntry.Controllers
                 employeeTimeEntryList.Add(employeeTimeEntry);
             }
 
-            return employeeTimeEntryList;
+            var sortedNames = employeeTimeEntryList.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ToList();
+            var sortedDates = employeeTimeEntryList.OrderBy(e => e.Date).ToList();
+
+            if (filterString == "default")
+            {
+                return employeeTimeEntryList;
+            }
+
+            if (!string.IsNullOrEmpty(TempData["currentSort"] as string)) { filterString = TempData["currentSort"] as string; }
+            else {  TempData["currentSort"] = filterString; }
+            TempData.Keep("currentSort");
+
+            if (filterString == "Employee Full Name")
+            {
+                return sortedNames;
+            }
+
+            else if (filterString == "Date")
+            {
+                return sortedDates;
+            }
+
+            else
+            {
+                return employeeTimeEntryList;
+            }
         }
 
-        public ActionResult SortList()
+        public ActionResult SortList(EmployeeTimeEntryModel employeeTimeEntryModel)
         {
-            readCsvFiles();
+            string filterString = employeeTimeEntryModel.SelectedFilter;
+            TempData["currentSort"] = filterString;
+            ViewData["employeeList"] = readCsvFiles(filterString);
+            viewModel.EntryID = employeeTimeEntryList.Count;
 
-
-
-            return View();
+            ModelState.Remove("EmployeeID");
+            TempData.Keep("currentSort");
+            return View("Index", viewModel);
         }
 
         public bool checkTimeEntry(string filePath, EmployeeTimeEntryModel employeeTimeEntryModel)

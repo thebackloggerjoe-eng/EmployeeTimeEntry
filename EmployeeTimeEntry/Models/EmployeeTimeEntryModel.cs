@@ -10,7 +10,7 @@ namespace EmployeeTimeEntry.Models
 
         [DisplayName("Select Employee Name")]
         [Required(ErrorMessage = "Please Select Employee Name.")]
-        public string EmployeeID { get; set; } = string.Empty;
+        public string? EmployeeID { get; set; } = string.Empty;
 
         public string? FirstName { get; set; }
 

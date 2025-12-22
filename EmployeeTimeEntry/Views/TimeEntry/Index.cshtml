@@ -53,7 +53,10 @@
             </div>
         </div>
     </div>
+}
 
+@using (Html.BeginForm("SortList", "TimeEntry", FormMethod.Post, new { id = "sortTableForm" }))
+{
     <div>
         <h1>Employee Time Entry</h1>
 
