@@ -18,8 +18,7 @@ namespace EmployeeTimeEntry.Controllers
         private int THOUSAND_ONE = 1001;
 
         string csvFolderPathEmployees;     // folder path for Employees.csv
-        string csvFolderPathTimeEntries;   // folder path for TimeEntries.csv
-        string reSortList = "";
+        string csvFolderPathTimeEntries;   // folder path for TimeEntries.csv     
 
         EmployeeTimeEntryModel viewModel = new EmployeeTimeEntryModel();
 
