@@ -10,24 +10,25 @@ namespace EmployeeTimeEntry.Models
 
         [DisplayName("Select Employee Name")]
         [Required(ErrorMessage = "Please Select Employee Name.")]
-        public string EmployeeID { get; set; }
+        public string EmployeeID { get; set; } = string.Empty;
 
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
 
+        [DisplayName("Date:")]
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Please enter a proper date.")]
         public DateTime Date { get; set; }
 
         [DisplayName("In Time:")]
         [DataType(DataType.Time)]
-        [Required(ErrorMessage = "Please enter an In Time.")]
+        [Required(ErrorMessage = "Please Enter a Valid In Time")]
         public DateTime InTime { get; set; }
 
         [DisplayName("Out Time:")]
         [DataType(DataType.Time)]
-        [Required(ErrorMessage = "Please enter an Out Time.")]
+        [Required(ErrorMessage = "Please Enter a Valid Out Time")]
         public DateTime OutTime { get; set; }
 
         public int TotalHours { get; set; }
@@ -37,6 +38,7 @@ namespace EmployeeTimeEntry.Models
         public string? SelectedFilter { get; set; }
 
         public string? NameSelect { get; set; }
+
         public List<SelectListItem>? NamesList { get; set; }
 
         [DisplayName("Filter By:")]

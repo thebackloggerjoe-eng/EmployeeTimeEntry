@@ -4,12 +4,11 @@
     ViewBag.Title = "Time Entry";
 }
 
-@using (Html.BeginForm("TimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm", @class = "needs-validated" }))
+@using (Html.BeginForm("SubmitTimeEntry", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm" }))
 {
     <div class="container">
         <!-- Modal -->
         <div class="modal fade" id="timeEntry">
-            <!-- tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
             <div class="modal-dialog modal-lg" role="document" style="max-width: 300px">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -23,33 +22,30 @@
                         <div class="form-Field">
                             <span id="timeExistsError" class="text-danger" style="display:none">@ViewBag.TimeExistsMesssage</span>
                             @Html.DropDownListFor(m => m.EmployeeID, Model.NamesList, "-- Select Employee --", new { @class = "form-select" })
-                            <span id="empValidDisplay" style="display:none">@Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })</span>
+                            @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })
 
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.Date)
                             @Html.TextBoxFor(m => m.Date, "{0:d MMM yyyy}", new { @class = "form-control", type = "date" })
-                            <!--@Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })-->
-                            <span id="dateError" class="text-danger" style="display:none">Please Enter a Valid Date</span>
+                            @Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.InTime)
                             @Html.TextBoxFor(m => m.InTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                            <!-- @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "text-danger" })-->
-                            <span id="inTimeError" class="text-danger" style="display:none">Please Enter a Valid In Time</span>
+                            @Html.ValidationMessageFor(m => m.InTime, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="form-Field">
                             @Html.LabelFor(m => m.OutTime)
                             @Html.TextBoxFor(m => m.OutTime, "{0:HH:mm}", new { @class = "form-control", type = "time" })
-                            <!--@Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "text-danger" })-->
-                            <span id="outTimeError" class="text-danger" style="display:none">Please Enter a Valid Out Time</span>
+                            @Html.ValidationMessageFor(m => m.OutTime, "", new { @class = "text-danger" })
                             <span id="timeDifError" class="text-danger" style="display:none">@ViewBag.timeDifferenceOff</span>
                         </div>
 
-                        <button id="addTimeBtn" type="button" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
+                        <button id="addTimeBtn" type="submit" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
 
                         @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
                     </div>
@@ -59,11 +55,9 @@
     </div>
 
     <div>
-
-        <!-- <div style="display: flex;display: flex;justify-content: center;">-->
         <h1>Employee Time Entry</h1>
 
-        <!-- Button trigger modal -->
+        <!-- Modal popup button -->
         <div class="entry-and-sort">
             <button type="button" id="btnTimeEntry">
                 New Time Entry
@@ -81,8 +75,6 @@
                     <th>Out Time:</th>
                     <th>Total hours:</th>
                 </tr>
-
-
             </thead>
 
             <tbody>
@@ -103,12 +95,18 @@
 }
 
 @section Scripts {
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
+            if ('@ViewBag.entrySuccessNotification'.length > 0)
+            {
+                alert('@ViewBag.entrySuccessNotification');
+            }
+
             if ('@ViewBag.TimeExistsMesssage'.length > 0)
             {
                 $("#timeExistsError").show();
@@ -127,7 +125,6 @@
         $(document).ready(function () {
             $("#btnTimeEntry").click(function () {
                 $("#timeEntry").modal('show');
-                // alert("clicked");
             });
 
             $("#btnTimeEntryClose").click(function () {
@@ -143,7 +140,7 @@
 
             const inTimeMatches = $('#InTime').val().match(regex_time);
             const outTimeMatches = $('#OutTime').val().match(regex_time);
- 
+
             $("#empValidDisplay").hide();
             $("#dateError").hide();
 

@@ -15,7 +15,7 @@ namespace EmployeeTimeEntry.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("TimeEntry", "TimeEntry");
+            return RedirectToAction("Index", "TimeEntry");
         }
 
         public IActionResult Privacy()
