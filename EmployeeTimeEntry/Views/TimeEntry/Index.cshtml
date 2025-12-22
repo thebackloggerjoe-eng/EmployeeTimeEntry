@@ -45,7 +45,7 @@
                             <span id="timeDifError" class="text-danger" style="display:none">@ViewBag.timeDifferenceOff</span>
                         </div>
 
-                        <button id="addTimeBtn" type="submit" class="btn btn-primary" onclick="checkValidation()">Add Time</button>
+                        <input id="addTimeBtn" type="submit" value="Add Time" class="btn btn-primary" />
 
                         @Html.TextBoxFor(m => m.EntryID, new { style = "display: none;" })
                     </div>
@@ -130,44 +130,7 @@
             $("#btnTimeEntryClose").click(function () {
                 $("#timeEntry").modal('hide');
             });
-        });
-
-        function checkValidation()
-        {
-            const dateEntry = Date.parse($('#Date').val());
-
-            const regex_time = /^(\d{2}):(\d{2})$/;
-
-            const inTimeMatches = $('#InTime').val().match(regex_time);
-            const outTimeMatches = $('#OutTime').val().match(regex_time);
-
-            $("#empValidDisplay").hide();
-            $("#dateError").hide();
-
-            if ($('#EmployeeID').val() == '')
-            {
-                $("#empValidDisplay").show();
-            }
-
-            if (isNaN(dateEntry))
-            {
-                $("#dateError").show();
-            }
-
-            if (!inTimeMatches)
-            {
-                $("#inTimeError").show();
-            }
-
-            if (!outTimeMatches)
-            {
-                $("#outTimeError").show();
-            }
-
-            if ($('#EmployeeID').val() == '' || isNaN(dateEntry)) { return; }
-
-            $('#timeEntryForm').submit();
-        }
+        }); 
 
     </script>
 }

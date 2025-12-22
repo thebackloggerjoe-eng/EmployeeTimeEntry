@@ -80,8 +80,7 @@ namespace EmployeeTimeEntry.Controllers
                             {
                                 csvWriteEmployee.WriteRecords(timeEntries);
                                 newEntrySuccess = true;
-                            }
-                            ;
+                            };
                         }
                     }
 
@@ -121,15 +120,13 @@ namespace EmployeeTimeEntry.Controllers
                 ViewBag.entrySuccessNotification = "Time Entry Added";
                 ModelState.Clear();
                 employeeTimeEntryModel.SelectedFilter = currentSortFilter;
-                employeeTimeEntryModel.EmployeeID = null;
             }
 
-
             viewModel.EntryID = employeeTimeEntryList.Count;
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
-        public List<EmployeeTimeEntryModel> readCsvFiles()
+        public List<EmployeeTimeEntryModel> readCsvFiles()  // function to call for reading the csv files and displaying time entries on screen
         {
             // StreamReader start
             using var streamReaderEmployees = new StreamReader(csvFolderPathEmployees);
@@ -153,7 +150,6 @@ namespace EmployeeTimeEntry.Controllers
                 employeesList.Add(employees);
             }
 
-            
             viewModel.FilterList = new List<SelectListItem>();
             viewModel.NamesList = new List<SelectListItem>();
 
@@ -184,6 +180,15 @@ namespace EmployeeTimeEntry.Controllers
             }
 
             return employeeTimeEntryList;
+        }
+
+        public ActionResult SortList()
+        {
+            readCsvFiles();
+
+
+
+            return View();
         }
 
         public bool checkTimeEntry(string filePath, EmployeeTimeEntryModel employeeTimeEntryModel)
