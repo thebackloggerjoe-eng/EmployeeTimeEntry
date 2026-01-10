@@ -35,13 +35,13 @@ namespace EmployeeTimeEntry.Models
 
         public string? SelectedNameId { get; set; }
 
-        public string? SelectedFilter { get; set; }
+        public string? SelectedSorting { get; set; }
 
         public string? NameSelect { get; set; }
 
         public List<SelectListItem>? NamesList { get; set; }
 
-        [DisplayName("Filter By:")]
-        public List<SelectListItem>? FilterList { get; set; }
+        [DisplayName("Sort By:")]
+        public List<SelectListItem>? SortingList { get; set; }
     }
 }
