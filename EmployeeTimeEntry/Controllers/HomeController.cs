@@ -14,7 +14,7 @@ namespace EmployeeTimeEntry.Controllers
         }
 
         public IActionResult Index()
-        {//
+        {
             return RedirectToAction("Index", "TimeEntry");
         }
 
