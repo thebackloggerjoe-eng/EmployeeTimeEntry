@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EmployeeTimeEntry.Models
+namespace EmployeeTimeEntry.Models;
+
+public class Employees
 {
-    public class Employees
-    {
-        public string EmployeeID { get; set; }
+    public string EmployeeID { get; set; }
 
-        public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-        public string LastName { get; set; }
-    }
+    public string LastName { get; set; }
 }
+
