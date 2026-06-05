@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTimeEntry", "EmployeeTimeEntry\EmployeeTimeEntry.csproj", "{BB7ED132-681B-43C9-9A0F-41E84A5DC0E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoeCardApplication", "JoeCardApplication\JoeCardApplication.csproj", "{2A8EB541-E63E-4BA0-8A05-88BC1E3A05EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BB7ED132-681B-43C9-9A0F-41E84A5DC0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB7ED132-681B-43C9-9A0F-41E84A5DC0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB7ED132-681B-43C9-9A0F-41E84A5DC0E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A8EB541-E63E-4BA0-8A05-88BC1E3A05EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A8EB541-E63E-4BA0-8A05-88BC1E3A05EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A8EB541-E63E-4BA0-8A05-88BC1E3A05EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A8EB541-E63E-4BA0-8A05-88BC1E3A05EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

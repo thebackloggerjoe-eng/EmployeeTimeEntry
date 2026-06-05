@@ -2,7 +2,125 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@using (Html.BeginForm("SubmitCertificate", "Home", FormMethod.Post, new {IDataTokensMetadata = "homeForm"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="landingHeader">
+        <div class="menuStripe" style="margin: 30px auto">
+            Joe Financial Card is Amazing
+        </div>
+
+    </div>
+
+   <!-- <div hidden=""><input data-val="true" data-val-required="The currentView field is required." id="currentView" name="currentView" type="text" value="Index02"></div>
+    <div class="loadingModal">
+        <div class="loadingModalBox">
+            <div class="loadingCircleContainer">
+                <div class="landingLogoContainer">
+                    <svg class="loadingLogo" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 61">
+                        <path class="loadingLogoCenter" d="M58.51,47.07L20.44.04,3.79,13.72l17.39,21.48H0v25.8h21.49v-25.42l20.58,25.42,16.44-13.51v13.51h21.49V0h-21.49v47.07Z"></path>
+                    </svg>
+                </div>
+                <svg class="circle" width="180" height="180">
+                    <circle class="circleGray" cx="90" cy="90" r="81"></circle>
+                    <circle class="circleBlue" cx="90" cy="90" r="81"></circle>
+                </svg>
+            </div>
+        </div>
+    </div> -->
+    <section class="offer-container">
+        <div class="offer-left">
+            <p class="entryLabel">CREDIT CONFIDENCE STARTS HERE</p>
+            <div class="entryLargeText">Respond to your Joe Financial<sup>®</sup> Credit Card offer</div>
+            <p class="description">
+                Enter a few details below to get started. The application takes a couple of minutes and
+                you'll get a decision as soon as you complete it.
+            </p>
+
+            <div class="inputCell nameCell">
+                <label for="certNumber">
+                    Acceptance Certificate Number
+                </label>
+                <div class="input-group input-group-soft w-100 mb-2">
+                    <input class="form-control alphaNumericOnly" data-val="true" data-val-regex="You must enter a valid Acceptance Certificate Number." data-val-required="Please enter a valid Acceptance Certificate Number." id="solicitationNum" maxlength="12" name="solicitationNum" type="text" value="">
+                </div>
+               <!-- <div class="small-link t-2">
+                    <a href="/Lookup/Lookup02">Can't find your Acceptance Certificate Number?</a>
+                </div> -->
+                <span class="text-danger d-block mb-1 mt-3 field-validation-valid" data-valmsg-for="solicitationNum" data-valmsg-replace="true"></span>
+                <label for="lastName">
+                    Last Name
+                </label>
+                <div class="input-group input-group-soft w-100 mb-3">
+                    <input class="form-control alphaOnly" data-val="true" data-val-required="Please enter your last name exactly as it appears on your offer letter." id="lastName" maxlength="25" minlength="2" name="lastName" type="text" value="">
+                </div>
+            <span class="text-danger d-block mt-1 field-validation-valid" data-valmsg-for="lastName" data-valmsg-replace="true"></span>
+                <div style="height: 10px;"></div>
+                <label for="emailAddress">
+                    Email Address (Optional)
+                </label>
+
+                <div class="input-group input-group-soft w-100 mb-2">
+                    <input class="form-control" data-val="true" data-val-regex="Please enter a valid email address" id="CertificateEmail" name="CertificateEmail" style="height:40px" type="text" value="">
+                    </div>
+            <span class="text-danger d-block mt-3 field-validation-valid" data-valmsg-for="CertificateEmail" data-valmsg-replace="true"></span>
+                <div class="entryButtonContainer mt-1">
+                    <input id="entryButtonSubmit" type="submit" value="Unlock your offer" class="entryButton" formaction="/Home/SubmitCertificate">
+                </div>
+            </div>
+        </div>
+
+       <!-- <div class="offer-right">
+            <img src="../content/images/threeCardEntry.png" alt="Credit cards" class="cards-img">
+        </div>-->
+    </section>
+    <!--<section class="features-section">
+        <div class="featuresHeaderText">Get on your way to building or rebuilding credit</div>
+        
+        <div id="featuresDYL" class="features-grid">
+            <div class="feature-card">
+                <div class="icon">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 30C0 13.4315 13.4315 0 30 0C46.5685 0 60 13.4315 60 30C60 46.5685 46.5685 60 30 60C13.4315 60 0 46.5685 0 30Z" fill="#FEF387"></path>
+                        <path d="M18.0611 40C17.4948 40 17.0096 39.7957 16.6058 39.387C16.2019 38.9783 16 38.4874 16 37.9143V22.0857C16 21.5126 16.2019 21.0217 16.6058 20.613C17.0096 20.2043 17.4948 20 18.0611 20H38.9742C39.5405 20 40.0256 20.2043 40.4295 20.613C40.8334 21.0217 41.0353 21.5126 41.0353 22.0857V29.123H17.6556V37.9143C17.6556 38.017 17.6978 38.1111 17.7821 38.1967C17.8667 38.282 17.9597 38.3247 18.0611 38.3247H30.2863V40H18.0611ZM17.6556 25.2053H39.3797V22.0857C39.3797 21.983 39.3375 21.8889 39.2532 21.8033C39.1686 21.718 39.0756 21.6753 38.9742 21.6753H18.0611C17.9597 21.6753 17.8667 21.718 17.7821 21.8033C17.6978 21.8889 17.6556 21.983 17.6556 22.0857V25.2053ZM38.3914 43V39H34.4385V37.3247H38.3914V33.3247H40.0471V37.3247H44V39H40.0471V43H38.3914Z" fill="#150D50"></path>
+                    </svg>
+                </div>
+                    <div class="feature-card-header">Get credit line increases over time</div>
+                    <div class="feature-card-text">
+                        Once approved, you'll have automatic account reviews and limit increases
+                        if you qualify.
+                    </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 30C0 13.4315 13.4315 0 30 0C46.5685 0 60 13.4315 60 30C60 46.5685 46.5685 60 30 60C13.4315 60 0 46.5685 0 30Z" fill="#FEF387"></path>
+                        <path d="M23.9411 41.9928C23.1889 41.9694 22.4734 41.7769 21.7946 41.4154C21.1161 41.0541 20.4744 40.5239 19.8695 39.8247C18.9676 38.7785 18.2639 37.5129 17.7585 36.0277C17.2528 34.5426 17 33.0096 17 31.4286C17 29.5695 17.3525 27.8233 18.0576 26.19C18.7627 24.5566 19.7251 23.1351 20.9448 21.9255C22.1646 20.7159 23.5957 19.7592 25.2382 19.0555C26.8805 18.3518 28.6344 18 30.5 18C32.3656 18 34.1195 18.3531 35.7618 19.0594C37.4043 19.7655 38.8332 20.7282 40.0484 21.9477C41.2636 23.1674 42.2261 24.5989 42.9356 26.2421C43.6452 27.8853 44 29.6465 44 31.5255C44 33.1642 43.7338 34.729 43.2014 36.2198C42.6692 37.7105 41.9209 38.9751 40.9565 40.0135C40.3383 40.6724 39.6969 41.1669 39.0324 41.4971C38.3675 41.8276 37.6787 41.9928 36.9658 41.9928C36.5849 41.9928 36.2087 41.9468 35.8371 41.8547C35.4655 41.7624 35.0939 41.6242 34.7223 41.4401L32.7328 40.4536C32.3842 40.2758 32.0204 40.1449 31.6415 40.0611C31.2625 39.977 30.8775 39.9349 30.4865 39.9349C30.0862 39.9349 29.7004 39.977 29.3291 40.0611C28.9577 40.1449 28.5992 40.2758 28.2537 40.4536L26.2777 41.4401C25.8824 41.6477 25.4953 41.7977 25.1163 41.89C24.7374 41.982 24.3457 42.0163 23.9411 41.9928ZM24.0133 40.2221C24.252 40.2221 24.4951 40.1924 24.7426 40.133C24.9899 40.0733 25.2329 39.9847 25.4716 39.8673L27.4611 38.8808C27.9329 38.6476 28.4201 38.4722 28.9226 38.3548C29.4252 38.2374 29.9392 38.1786 30.4645 38.1786C30.9898 38.1786 31.5072 38.235 32.0166 38.3478C32.5263 38.4603 33.0219 38.638 33.5034 38.8808L35.5284 39.8673C35.7671 39.9847 36.0042 40.0733 36.2396 40.133C36.4753 40.1924 36.7125 40.2221 36.9512 40.2221C37.4462 40.2221 37.9222 40.0998 38.379 39.8553C38.8361 39.6108 39.2866 39.2411 39.7304 38.7462C40.5175 37.8537 41.1283 36.7698 41.5629 35.4947C41.9973 34.2198 42.2144 32.8852 42.2144 31.491C42.2144 28.2099 41.0803 25.4363 38.8121 23.1699C36.5441 20.9038 33.7734 19.7707 30.5 19.7707C27.2266 19.7707 24.4559 20.9144 22.1879 23.2016C19.9197 25.4891 18.7856 28.2763 18.7856 31.5632C18.7856 32.972 19.0092 34.3129 19.4566 35.5859C19.9043 36.8592 20.5271 37.9352 21.325 38.8139C21.7629 39.3029 22.2002 39.6599 22.637 39.8849C23.0735 40.1097 23.5322 40.2221 24.0133 40.2221ZM30.5 33.6827C31.1456 33.6827 31.6926 33.4603 32.141 33.0154C32.5895 32.5708 32.8138 32.0284 32.8138 31.3881C32.8138 31.1912 32.7892 30.9965 32.7399 30.8039C32.6907 30.6116 32.6165 30.4308 32.5175 30.2617L34.9582 27.1465C35.2692 27.4707 35.5443 27.8259 35.7835 28.2123C36.0227 28.5987 36.2122 29.0173 36.3519 29.4683H38.2081C37.7631 27.6898 36.8272 26.2432 35.4005 25.1284C33.9735 24.0137 32.34 23.4563 30.5 23.4563C28.66 23.4563 27.0206 24.015 25.5817 25.1323C24.1432 26.2494 23.2086 27.6947 22.778 29.4683H24.6208C25.0513 28.191 25.8059 27.1648 26.8845 26.3897C27.9631 25.6146 29.1682 25.2271 30.5 25.2271C31.0478 25.2271 31.58 25.2983 32.0966 25.4406C32.6129 25.5832 33.1003 25.7879 33.5588 26.0547L31.1114 29.184C31.0171 29.1563 30.9167 29.1342 30.8101 29.1177C30.7036 29.1015 30.6002 29.0934 30.5 29.0934C29.8544 29.0934 29.3074 29.3159 28.859 29.7607C28.4105 30.2053 28.1862 30.7478 28.1862 31.3881C28.1862 32.0284 28.4105 32.5708 28.859 33.0154C29.3074 33.4603 29.8544 33.6827 30.5 33.6827Z" fill="#1C1B1F"></path>
+                    </svg>
+                </div>
+                <div class="feature-card-header">Access your FICO® Score for free — every month</div>
+                <p>
+                    Stay informed over time, so you can catch problems early and make better financial choices as you go.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 30C0 13.4315 13.4315 0 30 0C46.5685 0 60 13.4315 60 30C60 46.5685 46.5685 60 30 60C13.4315 60 0 46.5685 0 30Z" fill="#FEF387"></path>
+                        <path d="M28.7059 41.9756C25.9069 41.2291 23.5896 39.6177 21.7539 37.1415C19.918 34.6653 19 31.897 19 28.8365V21.5538L28.7059 18L38.4118 21.5538V28.8365C38.4118 28.9867 38.4084 29.1368 38.4017 29.2868C38.3951 29.437 38.3851 29.5871 38.372 29.737C38.1945 29.7031 38.0154 29.6776 37.8349 29.6605C37.6546 29.6434 37.4694 29.6348 37.2794 29.6348C37.1312 29.6348 36.9897 29.6414 36.8549 29.6545C36.7204 29.6673 36.579 29.6867 36.4308 29.7127C36.444 29.5667 36.4539 29.4243 36.4606 29.2855C36.4672 29.1469 36.4706 28.9972 36.4706 28.8365V22.8559L28.7059 20.0201L20.9412 22.8559V28.8365C20.9412 31.389 21.6745 33.7095 23.1412 35.798C24.6078 37.8864 26.4627 39.2787 28.7059 39.9748C29.0732 39.8588 29.4317 39.7178 29.7813 39.5518C30.1311 39.386 30.4736 39.1984 30.8088 38.9892V41.1966C30.4758 41.3698 30.134 41.5212 29.7836 41.651C29.4331 41.7809 29.0738 41.8891 28.7059 41.9756ZM34.6711 42C34.3692 42 34.1062 41.8904 33.8824 41.6712C33.6583 41.4523 33.5462 41.1951 33.5462 40.8998V37.0393C33.5462 36.744 33.6583 36.4908 33.8824 36.2799C34.1062 36.0689 34.3692 35.9635 34.6711 35.9635H34.8403V34.6977C34.8403 34.0341 35.0773 33.4706 35.5511 33.0074C36.0248 32.5441 36.6009 32.3125 37.2794 32.3125C37.958 32.3125 38.5341 32.5441 39.0077 33.0074C39.4814 33.4706 39.7182 34.0341 39.7182 34.6977V35.9635H39.8874C40.1928 35.9635 40.4546 36.0689 40.6729 36.2799C40.891 36.4908 41 36.744 41 37.0393V40.8998C41 41.1951 40.891 41.4523 40.6729 41.6712C40.4546 41.8904 40.1928 42 39.8874 42H34.6711ZM35.9853 35.9635H38.5735V34.6977C38.5735 34.3391 38.4495 34.0385 38.2015 33.7959C37.9534 33.5533 37.6461 33.432 37.2794 33.432C36.9127 33.432 36.6054 33.5533 36.3574 33.7959C36.1093 34.0385 35.9853 34.3391 35.9853 34.6977V35.9635Z" fill="#150D50"></path>
+                    </svg>
+                </div>
+                <div class="feature-card-header">$0 Fraud Liability Protection</div>
+                <p>
+                    We'll never hold you responsible for unauthorized transactions. This protection can resolve issues
+                    quickly and help keep your score intact.
+                </p>
+            </div>
+        </div>
+
+
+    </section>-->
+ }
