@@ -34,6 +34,15 @@ namespace JoeCardApplication.Controllers
             return View();
         }
 
+        public IActionResult DependencyInjectionDemo()
+        {
+            // CertificateRequest certificateRequest = new CertificateRequest();
+            // certificateRequest.marketingVersionCode = landingWelcomeSite(certificateRequest.currentSite);
+            // 
+
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

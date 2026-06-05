@@ -2,6 +2,9 @@
     ViewData["Title"] = "Home Page";
 }
 
+
+@model JoeCardApplication.Models.DependencyInjectionDemo
+
 @using (Html.BeginForm("SubmitCertificate", "Home", FormMethod.Post, new {IDataTokensMetadata = "homeForm"}))
 {
     @Html.AntiForgeryToken()
@@ -12,6 +15,9 @@
         </div>
 
     </div>
+
+    // DependencyInjectionDemo
+
 
    <!-- <div hidden=""><input data-val="true" data-val-required="The currentView field is required." id="currentView" name="currentView" type="text" value="Index02"></div>
     <div class="loadingModal">
